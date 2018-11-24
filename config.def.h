@@ -65,7 +65,8 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
 
 #define PROMPT_GO   "Go:"
 #define PROMPT_FIND "Find:"
-#define PROMPT_SEARCH "SEARCH:"
+#define PROMPT_SEARCH "Search:"
+#define PROMPT_BOOKMARKS "Bookmarks:"
 
 /* SETPROP(readprop, setprop, prompt)*/
 #define SETPROP(r, s, p) { \
@@ -113,6 +114,20 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
         } \
 }
 
+// url=$(buku -p -f 3 | sed 's/\t/ /g' | dmenu -i | cut -d ' ' -f 1 | buku -f 1 -p | awk 'FNR==2 {print $2}')
+
+#define BOOKMARKS(s, p) {\
+		.v = (const char *[]){ "/bin/sh", "-c", \
+			"url=\"$(buku -p -f 3 " \
+			"| sed \'s/\t/ /g\' " \
+			"| dmenu -p $3 -i " \
+			"| cut -d \' \' -f 1 " \
+			"| buku -f 1 -p " \
+			"| awk \'FNR==2 {print $2}\')\" && xprop -id $1 -f $2 8s -set $2 $url", \
+			"", winid, s, p, NULL \
+		} \
+}
+
 /* styles */
 /*
  * The iteration will stop at the first match, beginning at the beginning of
@@ -144,6 +159,7 @@ static Key keys[] = {
 	{ MODKEY,                GDK_KEY_g,      spawn,      SETPROP("_SURF_URI", "_SURF_GO", PROMPT_GO) },
 	{ MODKEY,                GDK_KEY_f,      spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
 	{ MODKEY,                GDK_KEY_slash,  spawn,      SEARCH("_SURF_FIND", "_SURF_GO", PROMPT_SEARCH)},
+	{ MODKEY,                GDK_KEY_b,      spawn,      BOOKMARKS("_SURF_GO", PROMPT_BOOKMARKS)},
 
 
 	{ 0,                     GDK_KEY_Escape, stop,       { 0 } },
