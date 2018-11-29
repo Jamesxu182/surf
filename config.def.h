@@ -16,20 +16,20 @@ static char *cookiefile     = "~/.surf/cookies.txt";
 static Parameter defconfig[ParameterLast] = {
 	/* parameter                    Arg value       priority */
 	[AcceleratedCanvas]   =       { { .i = 1 },     },
-	[AccessMicrophone]    =       { { .i = 0 },     },
-	[AccessWebcam]        =       { { .i = 0 },     },
+	[AccessMicrophone]    =       { { .i = 1 },     },
+	[AccessWebcam]        =       { { .i = 1 },     },
 	[Certificate]         =       { { .i = 0 },     },
 	[CaretBrowsing]       =       { { .i = 0 },     },
 	[CookiePolicies]      =       { { .v = "@Aa" }, },
 	[DefaultCharset]      =       { { .v = "UTF-8" }, },
 	[DiskCache]           =       { { .i = 1 },     },
-	[DNSPrefetch]         =       { { .i = 0 },     },
-	[FileURLsCrossAccess] =       { { .i = 0 },     },
+	[DNSPrefetch]         =       { { .i = 1 },     },
+	[FileURLsCrossAccess] =       { { .i = 1 },     },
 	[FontSize]            =       { { .i = 12 },    },
-	[FrameFlattening]     =       { { .i = 0 },     },
-	[Geolocation]         =       { { .i = 0 },     },
-	[HideBackground]      =       { { .i = 0 },     },
-	[Inspector]           =       { { .i = 0 },     },
+	[FrameFlattening]     =       { { .i = 1 },     },
+	[Geolocation]         =       { { .i = 1 },     },
+	[HideBackground]      =       { { .i = 1 },     },
+	[Inspector]           =       { { .i = 1 },     },
 	[Java]                =       { { .i = 1 },     },
 	[JavaScript]          =       { { .i = 1 },     },
 	[KioskMode]           =       { { .i = 0 },     },
@@ -37,16 +37,16 @@ static Parameter defconfig[ParameterLast] = {
 	[MediaManualPlay]     =       { { .i = 1 },     },
 	[Plugins]             =       { { .i = 1 },     },
 	[PreferredLanguages]  =       { { .v = (char *[]){ NULL } }, },
-	[RunInFullscreen]     =       { { .i = 0 },     },
+	[RunInFullscreen]     =       { { .i = 1 },     },
 	[ScrollBars]          =       { { .i = 1 },     },
 	[ShowIndicators]      =       { { .i = 1 },     },
 	[SiteQuirks]          =       { { .i = 1 },     },
-	[SmoothScrolling]     =       { { .i = 0 },     },
+	[SmoothScrolling]     =       { { .i = 1 },     },
 	[SpellChecking]       =       { { .i = 0 },     },
 	[SpellLanguages]      =       { { .v = ((char *[]){ "en_US", NULL }) }, },
 	[StrictTLS]           =       { { .i = 1 },     },
 	[Style]               =       { { .i = 1 },     },
-	[WebGL]               =       { { .i = 0 },     },
+	[WebGL]               =       { { .i = 1 },     },
 	[ZoomLevel]           =       { { .f = 1.0 },   },
 };
 
@@ -158,13 +158,13 @@ static SiteSpecific certs[] = {
 static Key keys[] = {
 	/* modifier              keyval          function    arg */
 	{ MODKEY,                GDK_KEY_g,      spawn,      SETPROP("_SURF_URI", "_SURF_GO", PROMPT_GO) },
-	{ MODKEY,                GDK_KEY_f,      spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
-	{ MODKEY,                GDK_KEY_slash,  spawn,      SEARCH("_SURF_FIND", "_SURF_GO", PROMPT_SEARCH)},
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_b,      spawn,      BOOKMARKS("_SURF_GO", PROMPT_BOOKMARKS)},
+	{ MODKEY,                GDK_KEY_slash,  spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
+	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_slash,  spawn,      SEARCH("_SURF_FIND", "_SURF_GO", PROMPT_SEARCH)},
+	// { MODKEY|GDK_SHIFT_MASK, GDK_KEY_b,      spawn,      BOOKMARKS("_SURF_GO", PROMPT_BOOKMARKS)},
 
 
 	{ 0,                     GDK_KEY_Escape, stop,       { 0 } },
-	{ MODKEY,                GDK_KEY_c,      stop,       { 0 } },
+	// { MODKEY,                GDK_KEY_c,      stop,       { 0 } },
 
 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_r,      reload,     { .i = 1 } },
 	{ MODKEY,                GDK_KEY_r,      reload,     { .i = 0 } },
@@ -180,12 +180,16 @@ static Key keys[] = {
 	// { GDK_MOD1_MASK,         GDK_KEY_h,      		scrollh,    { .i = +10 } },
 	// { GDK_MOD1_MASK,         GDK_KEY_semicolon,     scrollh,    { .i = -10 } },
 	{ MODKEY,                GDK_KEY_KP_Page_Down,	scrollv,    { .i = +50 } },
+	{ MODKEY,                GDK_KEY_f,	            scrollv,    { .i = +50 } },
+	{ MODKEY,                GDK_KEY_d,	            scrollv,    { .i = +25 } },
 	{ MODKEY,                GDK_KEY_KP_Page_Up,  	scrollv,    { .i = -50 } },
+	{ MODKEY,                GDK_KEY_b,  	        scrollv,    { .i = -50 } },
+	{ MODKEY,                GDK_KEY_u,  	        scrollv,    { .i = -25 } },
 
 
 //	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_j,      zoom,       { .i = -1 } },
 //	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_k,      zoom,       { .i = +1 } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_q,      zoom,       { .i = 0  } },
+	// { MODKEY|GDK_SHIFT_MASK, GDK_KEY_q,      zoom,       { .i = 0  } },
 	{ MODKEY,                GDK_KEY_minus,  zoom,       { .i = -1 } },
 	{ MODKEY,                GDK_KEY_plus,   zoom,       { .i = +1 } },
 	{ MODKEY,                GDK_KEY_equal,   zoom,       { .i = +1 } },
@@ -196,11 +200,11 @@ static Key keys[] = {
 	{ MODKEY,                GDK_KEY_n,      find,       { .i = +1 } },
 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_n,      find,       { .i = -1 } },
 
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_p,      print,      { 0 } },
+	{ MODKEY|GDK_SHIFT_MASK                 GDK_KEY_p,      print,      { 0 } },
 	// { MODKEY,                GDK_KEY_t,      showcert,   { 0 } },
 
 	// { MODKEY|GDK_SHIFT_MASK, GDK_KEY_a,      togglecookiepolicy, { 0 } },
-	// { 0,                     GDK_KEY_F11,    togglefullscreen, { 0 } },
+    { 0,                     GDK_KEY_F11,    togglefullscreen, { 0 } },
 	// { MODKEY|GDK_SHIFT_MASK, GDK_KEY_o,      toggleinspector, { 0 } },
 
 	// { MODKEY|GDK_SHIFT_MASK, GDK_KEY_c,      toggle,     { .i = CaretBrowsing } },
